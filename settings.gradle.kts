@@ -1,3 +1,8 @@
+/*
+ * Last Modified: 15/6/2025 3:3:25,
+ * Copyright (c) 2025 . Kamran N. Farvin
+ */
+
 pluginManagement {
     repositories {
         google {

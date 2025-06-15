@@ -1,3 +1,8 @@
+/*
+ * Last Modified: 15/6/2025 3:7:7,
+ * Copyright (c) 2025 . Kamran N. Farvin
+ */
+
 package com.kmno.tmdb
 
 import android.os.Bundle
@@ -11,7 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.kmno.tmdb.ui.theme.TmdbTheme
+import com.kmno.tmdb.utils.ui.theme.TmdbTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,6 +1,10 @@
-package com.kmno.tmdb.ui.theme
+/*
+ * Last Modified: 15/6/2025 3:7:7,
+ * Copyright (c) 2025 . Kamran N. Farvin
+ */
 
-import android.app.Activity
+package com.kmno.tmdb.utils.ui.theme
+
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
