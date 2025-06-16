@@ -10,14 +10,12 @@ import retrofit2.http.Query
 interface TmdbApi {
     @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(
-        @Query("api_key") apiKey: String = Constants.API_KEY,
         @Query("region") region: String = "CA",  // Canada
         @Query("page") page: Int = 1
     ): MovieResponse
 
     @GET("search/movie")
     suspend fun searchMovies(
-        @Query("api_key") apiKey: String = Constants.API_KEY,
         @Query("query") query: String,
         @Query("page") page: Int = 1
     ): MovieResponse

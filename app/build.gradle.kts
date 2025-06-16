@@ -61,6 +61,7 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.http.log)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -76,6 +77,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.timber)
+
+    implementation(libs.coil)
+    implementation(libs.coil.http)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
