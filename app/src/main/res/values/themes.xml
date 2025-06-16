@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Last Modified: 15/6/2025 3:3:25,
-  ~ Copyright (c) 2025 . Kamran N. Farvin
-  -->
-
 <resources>
 
     <style name="Theme.Tmdb" parent="android:Theme.Material.Light.NoActionBar" />

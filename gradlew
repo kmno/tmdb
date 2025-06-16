@@ -1,10 +1,4 @@
 #!/usr/bin/env sh
-
-#
-# Last Modified: 15/6/2025 3:3:24,
-# Copyright (c) 2025 . Kamran N. Farvin
-#
-
 ##############################################################################
 ##
 ##  Gradle start up script for UN*X

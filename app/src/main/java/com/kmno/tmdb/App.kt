@@ -1,6 +1,18 @@
-/*
- * Last Modified: 15/6/2025 15:9:10,
- * Copyright (c) 2025 . Kamran N. Farvin
- */
-
 package com.kmno.tmdb
+
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
+
+@HiltAndroidApp
+class App : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        // Initialize any global resources or configurations here
+        // For example, you can set up logging, crash reporting, etc.
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
+}
