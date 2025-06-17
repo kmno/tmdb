@@ -11,4 +11,5 @@ class RemoteDataSource @Inject constructor(
 ) {
     suspend fun getNowPlayingMovies() = api.getNowPlayingMovies()
     suspend fun searchMovies(query: String) = api.searchMovies(query = query)
+    suspend fun fetchMovieDetails(id: Int) = api.getMovieDetails(movieId = id)
 }
