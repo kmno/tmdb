@@ -24,7 +24,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,10 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.Movie
-import timber.log.Timber
 
 /**
  * Created by Kamran Nourinezhad on 16 June-6 2025.
@@ -49,16 +48,13 @@ fun MovieDetailsScreen(
     navController: NavController,
     viewModel: MovieDetailsViewModel = hiltViewModel()
 ) {
-    val movie by viewModel.movieDetails.collectAsState()
-    val isInWatchlist by remember {
-        derivedStateOf {
-            movie?.let {
-                viewModel.isInWatchlist(it.id)
-            } ?: false
-        }
-    }
+    val movieDetailsState by viewModel.movieDetails.collectAsStateWithLifecycle()
+    val watchlistState by viewModel.watchlist.collectAsState()
 
-    Timber.d("MovieDetailsScreen: movieId = $movieId, isInWatchlist = $isInWatchlist")
+    val isInWatchlistState = remember(movieDetailsState, watchlistState) {
+        movieDetailsState?.let { movie -> watchlistState.any { it.id == movie.id } } ?: false
+    }
+    //val isInWatchlistState by viewModel.isInWatchlist(movieId).collectAsStateWithLifecycle(false)
 
     LaunchedEffect(movieId) {
         viewModel.loadMovieDetails(movieId)
@@ -76,7 +72,7 @@ fun MovieDetailsScreen(
             )
         }
     ) { paddingValues ->
-        if (movie == null) {
+        if (movieDetailsState == null) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -86,11 +82,11 @@ fun MovieDetailsScreen(
             }
         } else {
             MovieDetailsContent(
-                movie = movie!!,
-                isInWatchlist = isInWatchlist,
+                movie = movieDetailsState!!,
+                isInWatchlist = isInWatchlistState,
                 onWatchlistToggle = {
-                    if (isInWatchlist) viewModel.removeFromWatchlist(movie!!)
-                    else viewModel.addToWatchlist(movie!!)
+                    if (isInWatchlistState) viewModel.removeFromWatchlist(movieDetailsState!!)
+                    else viewModel.addToWatchlist(movieDetailsState!!)
                 },
                 modifier = Modifier
                     .padding(paddingValues)

@@ -26,9 +26,6 @@ class MovieDetailsViewModel @Inject constructor(
     private val _movieDetails = MutableStateFlow<Movie?>(null)
     val movieDetails: StateFlow<Movie?> = _movieDetails
 
-    val watchlist: StateFlow<List<Movie>> = repository.getWatchlist()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
     fun loadMovieDetails(movieId: Int) {
         viewModelScope.launch {
             repository.fetchMovieDetails(movieId).collect {
@@ -37,11 +34,15 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    fun isInWatchlist(movieId: Int): Boolean {
-        Timber.d("Checking if movie with ID $movieId is in watchlist")
-        Timber.d(watchlist.value.toString())
-        return watchlist.value.any { it.id == movieId }
-    }
+    val watchlist: StateFlow<List<Movie>> = repository.getWatchlist()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            emptyList()
+        )
+
+    /*fun isInWatchlist(movieId: Int): Flow<Boolean> =
+        watchlist.map { list -> list.any { it.id == movieId } }*/
 
     fun addToWatchlist(movie: Movie) {
         viewModelScope.launch {
