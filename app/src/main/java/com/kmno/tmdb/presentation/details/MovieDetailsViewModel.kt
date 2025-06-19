@@ -39,14 +39,6 @@ class MovieDetailsViewModel @Inject constructor(
     private val _movieDetails = MutableStateFlow<UiState<Movie?>>(UiState.Loading)
     val movieDetails: StateFlow<UiState<Movie?>> = _movieDetails
 
-    /*fun loadMovieDetails(movieId: Int) {
-        viewModelScope.launch {
-            repository.fetchMovieDetails(movieId).collect {
-                _movieDetails.value = it
-            }
-        }
-    }*/
-
     fun loadMovieDetails(movieId: Int) = viewModelScope.launch {
         _movieDetails.value = UiState.Loading
         try {

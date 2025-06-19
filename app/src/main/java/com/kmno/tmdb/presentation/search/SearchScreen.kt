@@ -30,6 +30,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.Movie
 import toReadableDate
@@ -42,10 +44,11 @@ import toReadableDate
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
+    navController: NavController,
     onBack: () -> Unit
 ) {
     val movies by viewModel.movies.collectAsState()
-    val query by viewModel.query.collectAsState()
+    val query by viewModel.query.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -73,7 +76,7 @@ fun SearchScreen(
                 contentPadding = PaddingValues(8.dp)
             ) {
                 items(movies) { movie ->
-                    MovieItem(movie)
+                    MovieItem(movie, navController)
                 }
             }
         }
@@ -81,12 +84,14 @@ fun SearchScreen(
 }
 
 @Composable
-fun MovieItem(movie: Movie) {
+fun MovieItem(movie: Movie, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { /* TODO: Implement onClick if needed */ },
+            .clickable {
+                navController.navigate("details/${movie.id}")
+            },
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         val imageUrl = movie.posterPath?.let { Constants.IMAGE_BASE_URL + it }

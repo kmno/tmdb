@@ -20,12 +20,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +40,9 @@ import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.Movie
 import com.kmno.tmdb.utils.ConnectivityObserver
 import com.kmno.tmdb.utils.UiState
+import com.kmno.tmdb.utils.ui.shared.components.SharedSnackbarHost
+import com.kmno.tmdb.utils.ui.shared.showSnackbar
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -53,6 +58,9 @@ fun MovieDetailsScreen(
     viewModel: MovieDetailsViewModel = hiltViewModel()
 ) {
     val networkStatus by viewModel.isNetworkAvailable.collectAsStateWithLifecycle()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val movieDetailsState by viewModel.movieDetails.collectAsStateWithLifecycle()
     val watchlistState by viewModel.watchlist.collectAsStateWithLifecycle()
@@ -78,9 +86,9 @@ fun MovieDetailsScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SharedSnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-
         Timber.d("Network status: $networkStatus")
         //check network status
         if (networkStatus is ConnectivityObserver.Status.Unavailable) {
@@ -107,15 +115,25 @@ fun MovieDetailsScreen(
                 movie = (movieDetailsState as UiState.Success).data!!,
                 isInWatchlist = isInWatchlistState,
                 onWatchlistToggle = {
-                    if (isInWatchlistState) viewModel.removeFromWatchlist((movieDetailsState as UiState.Success).data!!)
-                    else viewModel.addToWatchlist((movieDetailsState as UiState.Success).data!!)
+                    val movie = (movieDetailsState as UiState.Success).data!!
+                    if (isInWatchlistState) viewModel.removeFromWatchlist(movie)
+                    else {
+                        viewModel.addToWatchlist(movie)
+                        coroutineScope.launch {
+                            showSnackbar(
+                                snackbarHostState,
+                                message = "✅ Added to watchlist",
+                                actionLabel = "Undo",
+                                onAction = { viewModel.removeFromWatchlist(movie) }
+                            )
+                        }
+                    }
                 },
                 modifier = Modifier
                     .padding(paddingValues)
                     .padding(16.dp)
             )
         }
-
     }
 }
 

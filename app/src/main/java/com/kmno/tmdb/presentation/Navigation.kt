@@ -45,7 +45,10 @@ fun Navigation() {
 
         composable(Routes.SEARCH) {
             val vm = hiltViewModel<SearchViewModel>()
-            SearchScreen(vm, onBack = { navController.popBackStack() })
+            SearchScreen(
+                vm,
+                navController = navController,
+                onBack = { navController.popBackStack() })
         }
 
         composable(Routes.WATCHLIST) {
