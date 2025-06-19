@@ -1,6 +1,5 @@
-package com.kmno.tmdb.ui.theme
+package com.kmno.tmdb.utils.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

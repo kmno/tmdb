@@ -1,0 +1,6 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="notice" value="Last Modified: &amp;#36;file.lastModified.day/&amp;#36;file.lastModified.month/&amp;#36;file.lastModified.year &amp;#36;file.lastModified.hour24:&amp;#36;file.lastModified.minute:&amp;#36;file.lastModified.second,&#10;Copyright (c) &amp;#36;originalComment.match(&quot;Copyright \(c\) (\d+)&quot;, 1, &quot;-&quot;, &quot;&amp;#36;today.year&quot;)&amp;#36;today.year . Kamran N. Farvin" />
+    <option name="myName" value="kamran" />
+  </copyright>
+</component>
