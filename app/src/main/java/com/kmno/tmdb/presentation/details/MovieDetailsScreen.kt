@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,9 +39,9 @@ import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.Movie
 import com.kmno.tmdb.utils.ConnectivityObserver
 import com.kmno.tmdb.utils.UiState
+import com.kmno.tmdb.utils.ui.UiEvent
 import com.kmno.tmdb.utils.ui.shared.components.SharedSnackbarHost
 import com.kmno.tmdb.utils.ui.shared.showSnackbar
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -60,7 +59,6 @@ fun MovieDetailsScreen(
     val networkStatus by viewModel.isNetworkAvailable.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     val movieDetailsState by viewModel.movieDetails.collectAsStateWithLifecycle()
     val watchlistState by viewModel.watchlist.collectAsStateWithLifecycle()
@@ -74,6 +72,23 @@ fun MovieDetailsScreen(
     // Load movie details when the screen is launched
     LaunchedEffect(movieId) {
         viewModel.loadMovieDetails(movieId)
+
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.ShowSnackbar -> {
+                    showSnackbar(
+                        snackbarHostState,
+                        message = event.message,
+                        actionLabel = event.actionLabel,
+                        onAction = event.onAction
+                    )
+                }
+
+                is UiEvent.ConfirmDialog -> TODO()
+                is UiEvent.ShowDialog -> TODO()
+                is UiEvent.Toast -> TODO()
+            }
+        }
     }
 
     Scaffold(
@@ -119,14 +134,6 @@ fun MovieDetailsScreen(
                     if (isInWatchlistState) viewModel.removeFromWatchlist(movie)
                     else {
                         viewModel.addToWatchlist(movie)
-                        coroutineScope.launch {
-                            showSnackbar(
-                                snackbarHostState,
-                                message = "✅ Added to watchlist",
-                                actionLabel = "Undo",
-                                onAction = { viewModel.removeFromWatchlist(movie) }
-                            )
-                        }
                     }
                 },
                 modifier = Modifier

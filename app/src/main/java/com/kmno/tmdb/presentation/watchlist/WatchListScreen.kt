@@ -21,9 +21,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.Movie
+import com.kmno.tmdb.utils.ui.UiEvent
 import com.kmno.tmdb.utils.ui.shared.ConfirmationDialog
+import com.kmno.tmdb.utils.ui.shared.components.SharedSnackbarHost
+import com.kmno.tmdb.utils.ui.shared.showSnackbar
 import toReadableDate
 
 /**
@@ -47,7 +52,50 @@ fun WatchlistScreen(
     viewModel: WatchListViewModel,
     onBack: () -> Unit
 ) {
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    var confirmDialogData by remember { mutableStateOf<UiEvent.ConfirmDialog?>(null) }
+
     val watchlist by viewModel.watchlist.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.ShowSnackbar -> {
+                    showSnackbar(
+                        snackbarHostState,
+                        message = event.message,
+                        actionLabel = event.actionLabel,
+                        onAction = event.onAction
+                    )
+                }
+
+                is UiEvent.ConfirmDialog -> {
+                    confirmDialogData = event
+                }
+
+                is UiEvent.ShowDialog -> TODO()
+                is UiEvent.Toast -> TODO()
+            }
+        }
+    }
+
+    confirmDialogData?.let { dialogData ->
+        ConfirmationDialog(
+            title = dialogData.title,
+            message = dialogData.message,
+            onConfirm = {
+                dialogData.onConfirm?.invoke()
+                confirmDialogData = null // ✅ dismiss dialog
+            },
+            onDismiss = {
+                dialogData.onDismiss?.invoke()
+                confirmDialogData = null // ✅ dismiss dialog
+            },
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,7 +106,8 @@ fun WatchlistScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SharedSnackbarHost(snackbarHostState) }
     ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding),
@@ -72,9 +121,10 @@ fun WatchlistScreen(
 }
 
 @Composable
-fun WatchlistItem(movie: Movie, onRemove: () -> Unit) {
-    var showRemoveDialog by remember { mutableStateOf(false) }
-
+fun WatchlistItem(
+    movie: Movie,
+    onRemove: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,21 +148,10 @@ fun WatchlistItem(movie: Movie, onRemove: () -> Unit) {
             Spacer(Modifier.height(8.dp))
             Text(text = movie.overview, maxLines = 3, style = MaterialTheme.typography.bodyMedium)
         }
-        IconButton(onClick = { showRemoveDialog = true }) {
+        IconButton(onClick = {
+            onRemove()
+        }) {
             Icon(Icons.Default.Delete, contentDescription = "Remove from Watchlist")
         }
-    }
-
-    if (showRemoveDialog) {
-        ConfirmationDialog(
-            title = "Remove from Watchlist",
-            message = "Are you sure you want to remove this movie?",
-            confirmText = "Remove",
-            onConfirm = {
-                onRemove()
-                showRemoveDialog = false
-            },
-            onDismiss = { showRemoveDialog = false }
-        )
     }
 }
