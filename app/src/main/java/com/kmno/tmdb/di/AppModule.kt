@@ -8,6 +8,7 @@ import com.kmno.tmdb.data.remote.RemoteDataSource
 import com.kmno.tmdb.data.remote.TmdbApi
 import com.kmno.tmdb.domain.MovieRepository
 import com.kmno.tmdb.domain.MovieRepositoryImpl
+import com.kmno.tmdb.utils.ConnectivityObserver
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -81,4 +82,9 @@ object AppModule {
 
     @Provides
     fun provideMovieDao(db: MovieDatabase) = db.movieDao()
+
+    @Provides
+    @Singleton
+    fun provideConnectivityObserver(@ApplicationContext context: Context) =
+        ConnectivityObserver(context)
 }

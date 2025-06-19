@@ -4,13 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kmno.tmdb.domain.Movie
 import com.kmno.tmdb.domain.MovieRepository
+import com.kmno.tmdb.utils.ConnectivityObserver
+import com.kmno.tmdb.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -20,17 +25,39 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
-    private val repository: MovieRepository
+    private val repository: MovieRepository,
+    private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
-    private val _movieDetails = MutableStateFlow<Movie?>(null)
-    val movieDetails: StateFlow<Movie?> = _movieDetails
+    private val network = connectivityObserver.observe()
+    val isNetworkAvailable = network.stateIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+        ConnectivityObserver.Status.Available
+    )
 
-    fun loadMovieDetails(movieId: Int) {
+    private val _movieDetails = MutableStateFlow<UiState<Movie?>>(UiState.Loading)
+    val movieDetails: StateFlow<UiState<Movie?>> = _movieDetails
+
+    /*fun loadMovieDetails(movieId: Int) {
         viewModelScope.launch {
             repository.fetchMovieDetails(movieId).collect {
                 _movieDetails.value = it
             }
+        }
+    }*/
+
+    fun loadMovieDetails(movieId: Int) = viewModelScope.launch {
+        _movieDetails.value = UiState.Loading
+        try {
+            val movie = repository.fetchMovieDetails(movieId).first()
+            _movieDetails.value = UiState.Success(movie)
+        } catch (e: IOException) {
+            _movieDetails.value = UiState.Error("No internet connection")
+        } catch (e: HttpException) {
+            _movieDetails.value = UiState.Error("Server error: ${e.code()}")
+        } catch (e: Exception) {
+            _movieDetails.value = UiState.Error("Unknown error")
         }
     }
 
@@ -40,9 +67,6 @@ class MovieDetailsViewModel @Inject constructor(
             SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
             emptyList()
         )
-
-    /*fun isInWatchlist(movieId: Int): Flow<Boolean> =
-        watchlist.map { list -> list.any { it.id == movieId } }*/
 
     fun addToWatchlist(movie: Movie) {
         viewModelScope.launch {
