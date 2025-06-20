@@ -107,7 +107,7 @@ fun UpcomingScreen(
                         .fillMaxSize(),
                     contentPadding = PaddingValues(8.dp)
                 ) {
-                    items((movies as UiState.Success<List<Movie>>).data) { movie ->
+                    items((movies as UiState.Success<List<Movie>>).data, key = { it.id }) { movie ->
                         MovieItem(movie, nav)
                     }
                 }

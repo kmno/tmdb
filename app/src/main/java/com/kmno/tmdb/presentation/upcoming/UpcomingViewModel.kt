@@ -7,12 +7,14 @@ import com.kmno.tmdb.domain.MovieRepository
 import com.kmno.tmdb.utils.ConnectivityObserver
 import com.kmno.tmdb.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -47,7 +49,7 @@ class UpcomingViewModel @Inject constructor(
             _movies.value = UiState.Loading
             delay(3000)
             try {
-                val movies = repository.getNowPlayingMovies()
+                val movies = withContext(Dispatchers.IO) { repository.getNowPlayingMovies() }
                 _movies.value = UiState.Success(movies)
             } catch (e: IOException) {
                 _movies.value = UiState.Error("No internet connection")
