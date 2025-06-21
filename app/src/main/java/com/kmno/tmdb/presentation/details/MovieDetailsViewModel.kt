@@ -70,12 +70,12 @@ class MovieDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.addToWatchlist(movie)
-                _uiEvent.emit(
+                /*_uiEvent.emit(
                     UiEvent.ShowSnackbar(
                         "✅ Added to watchlist",
                         actionLabel = "Undo",
                         onAction = { removeFromWatchlist(movie) })
-                )
+                )*/
             } catch (e: Exception) {
                 Timber.e(e.printStackTrace().toString())
                 _uiEvent.emit(
