@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -64,6 +66,7 @@ fun MovieDetailsScreen(
 
     val movieDetailsState by viewModel.movieDetails.collectAsStateWithLifecycle()
     val watchlistState by viewModel.watchlist.collectAsStateWithLifecycle()
+    val watchlistLoading by viewModel.isWatchlistProcessing.collectAsStateWithLifecycle()
 
     val movie = (movieDetailsState as? UiState.Success)?.data
 
@@ -145,6 +148,7 @@ fun MovieDetailsScreen(
                         MovieDetailsContent(movie)
                         WatchlistButton(
                             isInWatchlist = isInWatchlist,
+                            watchlistLoading = watchlistLoading,
                             onToggle = {
                                 if (isInWatchlist) viewModel.removeFromWatchlist(it)
                                 else viewModel.addToWatchlist(it)
@@ -200,7 +204,8 @@ fun MovieDetailsContent(
 @Composable
 fun WatchlistButton(
     isInWatchlist: Boolean,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
+    watchlistLoading: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -209,9 +214,19 @@ fun WatchlistButton(
         contentAlignment = Alignment.Center
     ) {
         Button(
-            onClick = onToggle
+            onClick = onToggle,
+            enabled = !watchlistLoading,
         ) {
-            Text(if (isInWatchlist) "Remove from Watchlist" else "Add to Watchlist")
+            if (watchlistLoading) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("Processing...")
+            } else {
+                Text(if (isInWatchlist) "Remove from Watchlist" else "Add to Watchlist")
+            }
         }
     }
 }
