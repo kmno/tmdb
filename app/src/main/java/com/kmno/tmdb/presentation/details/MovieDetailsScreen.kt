@@ -70,6 +70,14 @@ fun MovieDetailsScreen(
 
     val movie = (movieDetailsState as? UiState.Success)?.data
 
+    /**
+     * A derived state that determines whether the current movie is in the watchlist.
+     *
+     * This state is recomputed whenever the `movie` or `watchlistState` changes.
+     * It checks if the `movie` exists and if its ID matches any movie ID in the `watchlistState`.
+     *
+     * @property isInWatchlist A boolean value indicating if the movie is in the watchlist.
+     */
     val isInWatchlist by remember(movie, watchlistState) {
         derivedStateOf {
             movie?.let { m -> watchlistState.any { it.id == m.id } } ?: false

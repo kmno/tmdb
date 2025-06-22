@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,10 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.Movie
 import com.kmno.tmdb.utils.ConnectivityObserver
-import com.kmno.tmdb.utils.UiState
 import toReadableDate
 
 /**
@@ -54,7 +54,9 @@ fun UpcomingScreen(
 ) {
 
     val networkStatus by viewModel.isNetworkAvailable.collectAsStateWithLifecycle()
-    val movies by viewModel.movies.collectAsStateWithLifecycle()
+
+    //val movies by viewModel.movies.collectAsStateWithLifecycle()
+    val movies = viewModel.nowPlayingPagingFlow.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -80,40 +82,101 @@ fun UpcomingScreen(
             )
         }
 
-        when (movies) {
-            is UiState.Loading -> {
-                // Show a loading indicator
-                Box(
-                    modifier = Modifier.fillMaxSize(), // The Box takes up all available space
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator() // The indicator itself doesn't need fillMaxSize or wrapContentSize here
-                }// Content within the Box is
-            }
-
-            is UiState.Error -> Column(Modifier.fillMaxSize(), Arrangement.Center) {
-                Text((movies as UiState.Error).message)
-                Button(onClick = { viewModel.loadNowPlaying() }) {
-                    Text("Retry")
+        LazyColumn(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(movies.itemCount) { index ->
+                movies[index]?.let { movie ->
+                    MovieItem(movie, nav)
                 }
             }
 
-            is UiState.Success -> {
-                // Show the list of movies
-                // MovieList((movies as UiState.Success<List<Movie>>).data, padding, nav)
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(padding)
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    items((movies as UiState.Success<List<Movie>>).data, key = { it.id }) { movie ->
-                        MovieItem(movie, nav)
+            // Loading state when user scrolls
+            if (movies.loadState.append is LoadState.Loading) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
+            // Initial loading
+            if (movies.loadState.refresh is LoadState.Loading) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
+            // Error handling
+            if (movies.loadState.refresh is LoadState.Error) {
+                val error = movies.loadState.refresh as LoadState.Error
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("Error: ${error.error.localizedMessage ?: "Unknown error"}")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = { movies.retry() }) {
+                            Text("Retry")
+                        }
                     }
                 }
             }
         }
 
+
+        /* when (movies) {
+             is UiState.Loading -> {
+                 // Show a loading indicator
+                 Box(
+                     modifier = Modifier.fillMaxSize(), // The Box takes up all available space
+                     contentAlignment = Alignment.Center
+                 ) {
+                     CircularProgressIndicator() // The indicator itself doesn't need fillMaxSize or wrapContentSize here
+                 }// Content within the Box is
+             }
+
+             is UiState.Error -> Column(Modifier.fillMaxSize(), Arrangement.Center) {
+                 Text((movies as UiState.Error).message)
+                 Button(onClick = { viewModel.loadNowPlaying() }) {
+                     Text("Retry")
+                 }
+             }
+
+             is UiState.Success -> {
+                 // Show the list of movies
+                 // MovieList((movies as UiState.Success<List<Movie>>).data, padding, nav)
+                 LazyColumn(
+                     modifier = Modifier
+                         .padding(padding)
+                         .fillMaxSize(),
+                     contentPadding = PaddingValues(8.dp)
+                 ) {
+                     items((movies as UiState.Success<List<Movie>>).data, key = { it.id }) { movie ->
+                         MovieItem(movie, nav)
+                     }
+                 }
+             }
+         }
+ */
 
     }
 }
@@ -144,4 +207,3 @@ fun MovieItem(movie: Movie, nav: NavController) {
         }
     }
 }
-

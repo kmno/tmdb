@@ -12,7 +12,7 @@ interface TmdbApi {
     @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(
         @Query("region") region: String = "CA",  // Canada
-        @Query("page") page: Int = 1
+        @Query("page") page: Int
     ): MovieResponse
 
     @GET("movie/{movie_id}")

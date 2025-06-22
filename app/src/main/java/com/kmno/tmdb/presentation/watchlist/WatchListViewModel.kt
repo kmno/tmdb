@@ -26,6 +26,19 @@ class WatchListViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
+    /**
+     * A `StateFlow` that represents the user's watchlist.
+     *
+     * This flow is initialized with an empty list and observes the watchlist data
+     * from the repository. It uses the `stateIn` operator to ensure the flow is
+     * lifecycle-aware and provides a default value.
+     *
+     * - `viewModelScope`: Ensures the flow is tied to the lifecycle of the ViewModel.
+     * - `SharingStarted.Lazily`: Starts the flow only when it is collected.
+     * - `emptyList()`: Provides an initial empty list as the default value.
+     *
+     * @property watchlist A `StateFlow` containing the list of movies in the watchlist.
+     */
     val watchlist: StateFlow<List<Movie>> = repository.getWatchlist()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
