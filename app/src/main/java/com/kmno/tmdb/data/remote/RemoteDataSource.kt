@@ -9,7 +9,7 @@ import javax.inject.Inject
 class RemoteDataSource @Inject constructor(
     private val api: TmdbApi
 ) {
-    suspend fun getNowPlayingMovies() = api.getNowPlayingMovies()
+    suspend fun getNowPlayingMovies(page: Int) = api.getNowPlayingMovies(page = page)
     suspend fun searchMovies(query: String) = api.searchMovies(query = query)
     suspend fun fetchMovieDetails(id: Int) = api.getMovieDetails(movieId = id)
 }

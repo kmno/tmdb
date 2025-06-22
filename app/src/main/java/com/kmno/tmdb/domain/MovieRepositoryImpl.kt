@@ -1,5 +1,10 @@
 package com.kmno.tmdb.domain
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.kmno.tmdb.data.local.MovieDao
 import com.kmno.tmdb.data.local.MovieEntity
 import com.kmno.tmdb.data.remote.MovieDto
@@ -22,8 +27,8 @@ class MovieRepositoryImpl @Inject constructor(
     private val movieDao: MovieDao
 ) : MovieRepository {
 
-    override suspend fun getNowPlayingMovies(): List<Movie> {
-        val response = remoteDataSource.getNowPlayingMovies()
+    override suspend fun getNowPlayingMovies(page: Int): List<Movie> {
+        val response = remoteDataSource.getNowPlayingMovies(page)
         return response.results.map { it.toDomain() }
     }
 
@@ -57,6 +62,44 @@ class MovieRepositoryImpl @Inject constructor(
         Timber.e("MovieRepositoryImpl", "Checking if movie with ID $movieId is in watchlist")
         Timber.d(movieDao.isInWatchlist(movieId).toString())
         return movieDao.isInWatchlist(movieId)
+    }
+
+    override fun getNowPlayingPagingFlow(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { NowPlayingPagingSource(remoteDataSource) }
+        ).flow
+    }
+}
+
+class NowPlayingPagingSource @Inject constructor(
+    private val remoteDataSource: RemoteDataSource
+) : PagingSource<Int, Movie>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+        return try {
+            val page = params.key ?: 1
+            val response = remoteDataSource.getNowPlayingMovies(page = page)
+            val movies = response.results.map { it.toDomain() }
+
+            LoadResult.Page(
+                data = movies,
+                prevKey = if (page == 1) null else page - 1,
+                nextKey = if (movies.isEmpty()) null else page + 1
+            )
+        } catch (e: Exception) {
+            LoadResult.Error(e)
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+        return state.anchorPosition?.let { position ->
+            state.closestPageToPosition(position)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(position)?.nextKey?.minus(1)
+        }
     }
 }
 

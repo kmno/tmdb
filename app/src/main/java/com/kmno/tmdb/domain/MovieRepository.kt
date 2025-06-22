@@ -1,5 +1,6 @@
 package com.kmno.tmdb.domain
 
+import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -7,7 +8,8 @@ import kotlinx.coroutines.flow.Flow
  * Copyright (c)  2025 MCI.
  */
 interface MovieRepository {
-    suspend fun getNowPlayingMovies(): List<Movie>
+
+    suspend fun getNowPlayingMovies(page: Int): List<Movie>
 
     suspend fun searchMovies(query: String): List<Movie>
 
@@ -19,4 +21,7 @@ interface MovieRepository {
     suspend fun removeFromWatchlist(movie: Movie)
 
     suspend fun isInWatchlist(movieId: Int): Boolean
+
+    fun getNowPlayingPagingFlow(): Flow<PagingData<Movie>>
+
 }

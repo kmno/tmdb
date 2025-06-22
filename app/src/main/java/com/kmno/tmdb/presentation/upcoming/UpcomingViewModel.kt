@@ -2,12 +2,12 @@ package com.kmno.tmdb.presentation.upcoming
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kmno.tmdb.domain.Movie
+import androidx.paging.cachedIn
 import com.kmno.tmdb.domain.MovieRepository
+import com.kmno.tmdb.utils.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 /**
@@ -17,20 +17,42 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpcomingViewModel @Inject constructor(
-    private val repository: MovieRepository
+    repository: MovieRepository,
+    connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
-    private val _movies = MutableStateFlow<List<Movie>>(emptyList())
-    val movies: StateFlow<List<Movie>> = _movies
+    private val network = connectivityObserver.observe()
+    val isNetworkAvailable = network.stateIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+        ConnectivityObserver.Status.Available
+    )
+
+    // private val _movies = MutableStateFlow<UiState<List<Movie>>>(UiState.Loading)
+    //val movies: StateFlow<UiState<List<Movie>>> = _movies
+
+    val nowPlayingPagingFlow = repository
+        .getNowPlayingPagingFlow()
+        .cachedIn(viewModelScope)
 
     init {
-        loadNowPlaying()
+        //  loadNowPlaying()
     }
 
-    private fun loadNowPlaying() {
-        viewModelScope.launch {
-            val movies = repository.getNowPlayingMovies()
-            _movies.value = movies
-        }
-    }
+    /* fun loadNowPlaying() {
+         viewModelScope.launch {
+             _movies.value = UiState.Loading
+             delay(3000)
+             try {
+                 val movies = withContext(Dispatchers.IO) { repository.getNowPlayingMovies(page = 1) }
+                 _movies.value = UiState.Success(movies)
+             } catch (e: IOException) {
+                 _movies.value = UiState.Error("No internet connection")
+             } catch (e: HttpException) {
+                 _movies.value = UiState.Error("Server error: ${e.code()}")
+             } catch (e: Exception) {
+                 _movies.value = UiState.Error("Unknown error")
+             }
+         }
+     }*/
 }
