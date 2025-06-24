@@ -16,16 +16,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +42,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.Movie
 import com.kmno.tmdb.utils.ConnectivityObserver
+import kotlinx.coroutines.launch
 import toReadableDate
 
 /**
@@ -50,7 +56,8 @@ fun UpcomingScreen(
     viewModel: UpcomingViewModel,
     nav: NavController,
     onNavigateToSearch: () -> Unit,
-    onNavigateToWatchlist: () -> Unit
+    onNavigateToWatchlist: () -> Unit,
+    drawerState: DrawerState
 ) {
 
     val networkStatus by viewModel.isNetworkAvailable.collectAsStateWithLifecycle()
@@ -58,14 +65,25 @@ fun UpcomingScreen(
     //val movies by viewModel.movies.collectAsStateWithLifecycle()
     val movies = viewModel.nowPlayingPagingFlow.collectAsLazyPagingItems()
 
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Now Playing in Toronto") },
-                actions = {
+                title = { Text("Now Playing!") },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            drawerState.open() // Assuming you have a drawer state to open the navigation drawer
+                        }
+                    }) {
+                        Icon(Icons.Default.Menu, contentDescription = null)
+                    }
+                }
+                /*actions = {
                     TextButton(onClick = onNavigateToSearch) { Text("Search") }
                     TextButton(onClick = onNavigateToWatchlist) { Text("Watchlist") }
-                }
+                }*/
             )
         }
     ) { padding ->
