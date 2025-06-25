@@ -23,8 +23,4 @@ class AuthRepositoryImpl @Inject constructor(
             Result.failure(Exception("Invalid email or password"))
         }
     }
-
-    override suspend fun logout(): Result<Unit> {
-        TODO("Not yet implemented")
-    }
 }

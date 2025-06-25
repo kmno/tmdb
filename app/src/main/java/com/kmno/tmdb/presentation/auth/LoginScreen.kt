@@ -20,7 +20,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.kmno.tmdb.presentation.Routes
 
 /**
  * Created by Kamran Nourinezhad on 24 June-6 2025.
@@ -74,8 +73,8 @@ fun LoginScreen(
         Button(
             onClick = {
                 viewModel.login {
-                    navController.navigate(Routes.UPCOMING) {
-                        popUpTo(Routes.LOGIN) { inclusive = true }
+                    navController.navigate("main") {
+                        popUpTo("auth") { inclusive = true }
                     }
                 }
             },

@@ -57,7 +57,7 @@ fun UpcomingScreen(
     nav: NavController,
     onNavigateToSearch: () -> Unit,
     onNavigateToWatchlist: () -> Unit,
-    drawerState: DrawerState
+    drawerState: DrawerState?
 ) {
 
     val networkStatus by viewModel.isNetworkAvailable.collectAsStateWithLifecycle()
@@ -74,7 +74,7 @@ fun UpcomingScreen(
                 navigationIcon = {
                     IconButton(onClick = {
                         scope.launch {
-                            drawerState.open() // Assuming you have a drawer state to open the navigation drawer
+                            drawerState?.open() // Assuming you have a drawer state to open the navigation drawer
                         }
                     }) {
                         Icon(Icons.Default.Menu, contentDescription = null)
