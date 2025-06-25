@@ -1,4 +1,4 @@
-package com.kmno.tmdb.domain
+package com.kmno.tmdb.domain.movie
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

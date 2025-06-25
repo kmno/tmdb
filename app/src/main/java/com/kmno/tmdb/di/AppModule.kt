@@ -6,9 +6,12 @@ import androidx.room.Room
 import com.kmno.tmdb.data.local.MovieDatabase
 import com.kmno.tmdb.data.remote.RemoteDataSource
 import com.kmno.tmdb.data.remote.TmdbApi
-import com.kmno.tmdb.domain.MovieRepository
-import com.kmno.tmdb.domain.MovieRepositoryImpl
+import com.kmno.tmdb.domain.auth.AuthRepository
+import com.kmno.tmdb.domain.auth.AuthRepositoryImpl
+import com.kmno.tmdb.domain.movie.MovieRepository
+import com.kmno.tmdb.domain.movie.MovieRepositoryImpl
 import com.kmno.tmdb.utils.ConnectivityObserver
+import com.kmno.tmdb.utils.UserPreferences
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -39,6 +42,15 @@ abstract class RepositoryModule {
     abstract fun bindMovieRepository(
         impl: MovieRepositoryImpl
     ): MovieRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class AuthModule {
+    @Binds
+    abstract fun bindAuthRepository(
+        impl: AuthRepositoryImpl
+    ): AuthRepository
 }
 
 @Module
@@ -87,4 +99,8 @@ object AppModule {
     @Singleton
     fun provideConnectivityObserver(@ApplicationContext context: Context) =
         ConnectivityObserver(context)
+
+    @Provides
+    @Singleton
+    fun provideUserPreferences(@ApplicationContext context: Context) = UserPreferences(context)
 }

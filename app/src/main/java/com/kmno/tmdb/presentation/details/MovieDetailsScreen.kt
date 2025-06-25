@@ -41,7 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
-import com.kmno.tmdb.domain.Movie
+import com.kmno.tmdb.domain.movie.Movie
 import com.kmno.tmdb.utils.ConnectivityObserver
 import com.kmno.tmdb.utils.UiState
 import com.kmno.tmdb.utils.ui.UiEvent

@@ -22,6 +22,7 @@ timber = "5.0.1"
 coil = "3.2.0"
 okhttpLog = "4.12.0"
 paging = "3.3.6"
+datastore = "1.1.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,6 +57,7 @@ coil-http = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "co
 http-log = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttpLog" }
 paging-core = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
+datastore-compose = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

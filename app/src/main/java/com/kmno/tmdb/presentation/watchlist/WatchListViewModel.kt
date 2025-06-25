@@ -2,8 +2,8 @@ package com.kmno.tmdb.presentation.watchlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kmno.tmdb.domain.Movie
-import com.kmno.tmdb.domain.MovieRepository
+import com.kmno.tmdb.domain.movie.Movie
+import com.kmno.tmdb.domain.movie.MovieRepository
 import com.kmno.tmdb.utils.ui.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

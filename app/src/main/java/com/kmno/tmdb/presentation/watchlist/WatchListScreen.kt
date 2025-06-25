@@ -34,7 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
-import com.kmno.tmdb.domain.Movie
+import com.kmno.tmdb.domain.movie.Movie
 import com.kmno.tmdb.utils.ui.UiEvent
 import com.kmno.tmdb.utils.ui.shared.ConfirmationDialog
 import com.kmno.tmdb.utils.ui.shared.components.SharedSnackbarHost
