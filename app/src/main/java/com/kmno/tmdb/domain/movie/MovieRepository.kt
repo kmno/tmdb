@@ -1,4 +1,4 @@
-package com.kmno.tmdb.domain
+package com.kmno.tmdb.domain.movie
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow

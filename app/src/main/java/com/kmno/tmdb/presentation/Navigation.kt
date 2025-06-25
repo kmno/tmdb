@@ -19,9 +19,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kmno.tmdb.presentation.auth.LoginScreen
+import com.kmno.tmdb.presentation.auth.LoginViewModel
 import com.kmno.tmdb.presentation.details.MovieDetailsScreen
 import com.kmno.tmdb.presentation.search.SearchScreen
 import com.kmno.tmdb.presentation.search.SearchViewModel
+import com.kmno.tmdb.presentation.splash.SplashScreen
+import com.kmno.tmdb.presentation.splash.SplashViewModel
 import com.kmno.tmdb.presentation.upcoming.UpcomingScreen
 import com.kmno.tmdb.presentation.upcoming.UpcomingViewModel
 import com.kmno.tmdb.presentation.watchlist.WatchListViewModel
@@ -34,6 +38,8 @@ import kotlinx.coroutines.launch
  */
 
 object Routes {
+    const val SPLASH = "splash"
+    const val LOGIN = "login"
     const val UPCOMING = "upcoming"
     const val SEARCH = "search"
     const val WATCHLIST = "watchlist"
@@ -62,8 +68,30 @@ fun Navigation() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.UPCOMING
+            startDestination = Routes.SPLASH
         ) {
+
+            composable(Routes.SPLASH) {
+                val userPrefs = hiltViewModel<SplashViewModel>().userPrefs
+                SplashScreen(
+                    userPrefs,
+                    onNavigateToLogin = {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onNavigateToUpcoming = {
+                        navController.navigate(Routes.UPCOMING) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(Routes.LOGIN) {
+                val vm = hiltViewModel<LoginViewModel>()
+                LoginScreen(vm, navController)
+            }
+
             composable(Routes.UPCOMING) {
                 val vm = hiltViewModel<UpcomingViewModel>()
                 UpcomingScreen(

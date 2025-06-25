@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
-import com.kmno.tmdb.domain.Movie
+import com.kmno.tmdb.domain.movie.Movie
 import com.kmno.tmdb.utils.UiState
 import toReadableDate
 

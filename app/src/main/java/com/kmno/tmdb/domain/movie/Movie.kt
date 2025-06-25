@@ -1,4 +1,4 @@
-package com.kmno.tmdb.domain
+package com.kmno.tmdb.domain.movie
 
 /**
  * Created by Kamran Nourinezhad on 16 June-6 2025.

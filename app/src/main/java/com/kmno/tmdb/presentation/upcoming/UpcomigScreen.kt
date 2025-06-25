@@ -40,7 +40,7 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.rememberAsyncImagePainter
-import com.kmno.tmdb.domain.Movie
+import com.kmno.tmdb.domain.movie.Movie
 import com.kmno.tmdb.utils.ConnectivityObserver
 import kotlinx.coroutines.launch
 import toReadableDate

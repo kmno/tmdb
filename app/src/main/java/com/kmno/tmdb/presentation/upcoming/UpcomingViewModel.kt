@@ -3,7 +3,7 @@ package com.kmno.tmdb.presentation.upcoming
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.kmno.tmdb.domain.MovieRepository
+import com.kmno.tmdb.domain.movie.MovieRepository
 import com.kmno.tmdb.utils.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
