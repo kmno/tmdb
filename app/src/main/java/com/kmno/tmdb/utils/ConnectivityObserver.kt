@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 class ConnectivityObserver(context: Context) {
 
     sealed class Status {
-        object Available : Status();
+        object Available : Status()
         object Unavailable : Status()
     }
 
