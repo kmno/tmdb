@@ -29,12 +29,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -43,6 +46,7 @@ import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.movie.Movie
 import com.kmno.tmdb.utils.ConnectivityObserver
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import toReadableDate
 
 /**
@@ -55,8 +59,6 @@ import toReadableDate
 fun UpcomingScreen(
     viewModel: UpcomingViewModel,
     nav: NavController,
-    onNavigateToSearch: () -> Unit,
-    onNavigateToWatchlist: () -> Unit,
     drawerState: DrawerState?
 ) {
 
@@ -66,6 +68,20 @@ fun UpcomingScreen(
     val movies = viewModel.nowPlayingPagingFlow.collectAsLazyPagingItems()
 
     val scope = rememberCoroutineScope()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+
+        val lifecycleObserver = LifecycleEventObserver { _, event ->
+            Timber.e("Lifecycle event: ${event.name}")
+        }
+
+        lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
+        }
+    }
 
     Scaffold(
         topBar = {
