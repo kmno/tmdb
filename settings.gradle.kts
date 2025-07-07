@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "tmdb"
 include(":app")
- 
+include(":upcoming")

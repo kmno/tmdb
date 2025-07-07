@@ -1,13 +1,7 @@
-/*
- * Last Modified: 15/6/2025 3:3:24,
- * Copyright (c) 2025 . Kamran N. Farvin
- */
+package com.kmno.upcoming
 
-package com.kmno.tmdb
-
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
