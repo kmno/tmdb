@@ -31,7 +31,7 @@ class AuthViewModelTest {
     fun setup() {
         clearAllMocks()
 
-        authTokenFlow = MutableStateFlow<String?>(null)
+        authTokenFlow = MutableStateFlow(null)
         every { userPref.authToken } returns authTokenFlow
 
         viewModel = AuthViewModel(userPref)
