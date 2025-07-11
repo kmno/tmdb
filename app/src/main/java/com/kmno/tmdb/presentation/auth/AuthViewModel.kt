@@ -5,8 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.kmno.tmdb.utils.UserPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
@@ -18,21 +19,28 @@ class AuthViewModel @Inject constructor(
     private val userPref: UserPreferences
 ) : ViewModel() {
 
-    private val _isLoggedIn = MutableStateFlow<Boolean?>(null)
-    val isLoggedIn: StateFlow<Boolean?> = _isLoggedIn
+    /*  private val _isLoggedIn = MutableStateFlow(false)
+      val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
-    init {
-        viewModelScope.launch {
-            userPref.authToken.collect { token ->
-                _isLoggedIn.value = !token.isNullOrEmpty()
-            }
-        }
-    }
+      init {
+          viewModelScope.launch {
+              userPref.authToken.collect { token ->
+                  _isLoggedIn.value = !token.isNullOrEmpty()
+              }
+          }
+      }*/
+    val isLoggedIn = userPref.authToken
+        .map { !it.isNullOrEmpty() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = false
+        )
+
 
     fun logout() {
         viewModelScope.launch {
             userPref.clearToken()
-            _isLoggedIn.value = false
         }
     }
 }
