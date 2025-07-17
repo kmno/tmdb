@@ -137,12 +137,8 @@ fun AppNavHost(
                 UpcomingScreen(
                     vm,
                     navController,
-                    drawerState = drawerState,
-                    onNavigateToSearch = {
-                        navController.navigate(Routes.SEARCH)
-                    }, onNavigateToWatchlist = {
-                        navController.navigate(Routes.WATCHLIST)
-                    })
+                    drawerState = drawerState
+                )
             }
 
             composable(Routes.SEARCH) {
