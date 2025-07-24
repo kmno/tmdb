@@ -31,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -78,7 +79,7 @@ fun MovieDetailsScreen(
      *
      * @property isInWatchlist A boolean value indicating if the movie is in the watchlist.
      */
-    val isInWatchlist by remember(movie, watchlistState) {
+    val isInWatchlist by rememberSaveable(movie, watchlistState) {
         derivedStateOf {
             movie?.let { m -> watchlistState.any { it.id == m.id } } ?: false
         }
