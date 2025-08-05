@@ -116,7 +116,7 @@ class LoginScreenTest {
     }
 
     @Test
-    fun loginButton_showsLoadingAndNavigatesAfterClick() {
+    fun loginButton_showsLoadingAfterClick() {
         val emailInput = "test@example.com"
         val passwordInput = "securePassword123"
 
@@ -129,7 +129,6 @@ class LoginScreenTest {
 
         loginButton.performClick()
         composeTestRule.waitForIdle()
-
 
         composeTestRule.onNodeWithTag("progress_indicator").assertIsDisplayed()
     }

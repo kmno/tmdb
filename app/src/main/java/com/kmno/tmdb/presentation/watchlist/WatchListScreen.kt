@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
 import com.kmno.tmdb.domain.movie.Movie
@@ -52,11 +53,8 @@ fun WatchlistScreen(
     viewModel: WatchListViewModel,
     onBack: () -> Unit
 ) {
-
     val snackbarHostState = remember { SnackbarHostState() }
-
     var confirmDialogData by remember { mutableStateOf<UiEvent.ConfirmDialog?>(null) }
-
     val watchlist by viewModel.watchlist.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -110,10 +108,12 @@ fun WatchlistScreen(
         snackbarHost = { SharedSnackbarHost(snackbarHostState) }
     ) { padding ->
         LazyColumn(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier
+                .padding(padding)
+                .testTag("movie_lazy_list"),
             contentPadding = PaddingValues(8.dp)
         ) {
-            items(watchlist) { movie ->
+            items(watchlist, key = { it.id }) { movie ->
                 WatchlistItem(movie, onRemove = { viewModel.removeFromWatchlist(movie) })
             }
         }
