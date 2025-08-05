@@ -32,7 +32,7 @@ fun SplashScreen(
 
     LaunchedEffect(Unit) {
         userPrefs.authToken.firstOrNull().let { token ->
-            delay(3000)
+            delay(2000)
             if (token != null) {
                 isLoading = false
                 onNavigateToUpcoming()

@@ -158,6 +158,7 @@ fun UpcomingScreen(
 
             // Error handling
             if (movies.loadState.refresh is LoadState.Error) {
+                // Cast to LoadState.Error to get the error message
                 val error = movies.loadState.refresh as LoadState.Error
                 item {
                     Column(
