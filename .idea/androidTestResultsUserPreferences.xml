@@ -96,6 +96,19 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="17106097">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="00_Android_16_Resizable" value="120" />
+                  <entry key="Duration" value="90" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="159178273">
           <value>
             <AndroidTestResultsTableState>
@@ -103,6 +116,19 @@
                 <map>
                   <entry key="00_Android_16_Resizable" value="120" />
                   <entry key="Android_15_API_35" value="120" />
+                  <entry key="Duration" value="90" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="928126946">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="00_Android_16_Resizable" value="120" />
                   <entry key="Duration" value="90" />
                   <entry key="Tests" value="360" />
                 </map>

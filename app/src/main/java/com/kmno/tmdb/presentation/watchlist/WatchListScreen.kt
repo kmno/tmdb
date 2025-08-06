@@ -110,7 +110,7 @@ fun WatchlistScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(padding)
-                .testTag("movie_lazy_list"),
+                .testTag("watchlist_movies_list"),
             contentPadding = PaddingValues(8.dp)
         ) {
             items(watchlist, key = { it.id }) { movie ->
@@ -148,8 +148,10 @@ fun WatchlistItem(
             Spacer(Modifier.height(8.dp))
             Text(text = movie.overview, maxLines = 3, style = MaterialTheme.typography.bodyMedium)
         }
-        IconButton(onClick = {
-            onRemove()
+        IconButton(
+            modifier = Modifier.testTag("toggle_watchlist_button_${movie.id}"),
+            onClick = {
+                onRemove()
         }) {
             Icon(Icons.Default.Delete, contentDescription = "Remove from Watchlist")
         }

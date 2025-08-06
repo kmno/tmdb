@@ -3,6 +3,7 @@ package com.kmno.tmdb
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import com.kmno.tmdb.presentation.watchlist.WatchListViewModel
 import com.kmno.tmdb.presentation.watchlist.WatchlistScreen
 import io.mockk.clearAllMocks
@@ -37,6 +38,12 @@ class WatchlistScreenTest {
     @Test
     fun movieList_isShown() {
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithTag("movie_lazy_list").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("watchlist_movies_list").assertIsDisplayed()
+    }
+
+    @Test
+    fun confirmDialog_isShown_on_toggleWatchlistButton_click() {
+        composeTestRule.onNodeWithTag("toggle_watchlist_button_1").performClick()
+        composeTestRule.onNodeWithTag("confirmation_dialog").assertIsDisplayed()
     }
 }

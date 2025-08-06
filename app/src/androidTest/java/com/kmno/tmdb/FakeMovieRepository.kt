@@ -14,7 +14,28 @@ import kotlinx.coroutines.flow.flowOf
  */
 class FakeMovieRepository : MovieRepository {
 
-    private val watchlist = MutableStateFlow<List<Movie>>(emptyList())
+    private val watchlist = MutableStateFlow(
+        listOf(
+            Movie(
+                id = 1, title = "Fake Movie",
+                overview = "Fake Overview",
+                posterPath = "Fake Path",
+                releaseDate = "Fake Date"
+            ),
+            Movie(
+                id = 2, title = "Fake Movie",
+                overview = "Fake Overview",
+                posterPath = "Fake Path",
+                releaseDate = "Fake Date"
+            ),
+            Movie(
+                id = 3, title = "Fake Movie",
+                overview = "Fake Overview",
+                posterPath = "Fake Path",
+                releaseDate = "Fake Date"
+            )
+        )
+    )
     private val movieDetails = MutableStateFlow<Movie?>(null)
 
     override suspend fun getNowPlayingMovies(page: Int): List<Movie> {
