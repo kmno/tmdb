@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TMDB</string>
+    <string name="email_label">Enter your Email</string>
+    <string name="password_label">Enter your Password</string>
 </resources>

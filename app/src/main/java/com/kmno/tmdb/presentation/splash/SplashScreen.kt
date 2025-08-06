@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.kmno.tmdb.utils.UserPreferences
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
@@ -32,7 +33,7 @@ fun SplashScreen(
 
     LaunchedEffect(Unit) {
         userPrefs.authToken.firstOrNull().let { token ->
-            delay(3000)
+            delay(2000)
             if (token != null) {
                 isLoading = false
                 onNavigateToUpcoming()
@@ -44,6 +45,10 @@ fun SplashScreen(
     }
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .testTag("splash_screen_loading")
+        )
     }
 }

@@ -65,7 +65,7 @@ fun Navigation(
     val scope = rememberCoroutineScope()
 
     // Check if the user is logged in to show the drawer
-    if (isLoggedIn == true) {
+    if (isLoggedIn) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {

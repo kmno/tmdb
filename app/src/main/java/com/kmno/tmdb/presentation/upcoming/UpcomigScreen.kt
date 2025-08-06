@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -119,10 +120,11 @@ fun UpcomingScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(padding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .testTag("upcoming_movies_list"),
             contentPadding = PaddingValues(8.dp)
         ) {
-            items(movies.itemCount) { index ->
+            items(movies.itemCount, key = { index -> movies[index]?.id ?: index }) { index ->
                 movies[index]?.let { movie ->
                     MovieItem(movie, nav)
                 }
@@ -137,27 +139,34 @@ fun UpcomingScreen(
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(32.dp)
+                        )
                     }
                 }
             }
 
             // Initial loading
             if (movies.loadState.refresh is LoadState.Loading) {
-                item {
+                item(key = "loading") {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(32.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .testTag("initial_loading_indicator")
+                        )
                     }
                 }
             }
 
             // Error handling
             if (movies.loadState.refresh is LoadState.Error) {
+                // Cast to LoadState.Error to get the error message
                 val error = movies.loadState.refresh as LoadState.Error
                 item {
                     Column(
